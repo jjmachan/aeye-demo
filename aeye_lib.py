@@ -1,7 +1,7 @@
 import requests
 import json
 
-class aeye():
+class Aeye():
     def __init__(self, base_url):
         self.base_url = base_url
         r = requests.get(base_url)
@@ -25,7 +25,7 @@ class aeye():
         r = requests.post(url, data=img)
 
         objects_detected = json.loads(r.json())
-        print(objects_detected)
+        return objects_detected
 
     def whos_this(self, img, threshold=0.5):
         url = self.base_url+'/face_recognition'
@@ -39,11 +39,14 @@ class aeye():
         return None
 
     def faces(self, img):
-        pass
+        url = self.base_url+'/get_faces'
+        r  = requests.post(url, data=img)
 
+        boxes, probs = json.loads(r.json())
+        return boxes
 
 if __name__ == '__main__':
-    aeye = aeye('http://35.225.149.37:5000')
-    img = open('./test-images/disha1.jpg', 'rb')
-    name = aeye.whos_this(img)
+    aeye = Aeye('http://35.225.149.37:5000')
+    img = open('./test-images/people1.jpg', 'rb')
+    name = aeye.faces(img)
     print(name)
